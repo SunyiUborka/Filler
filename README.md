@@ -50,7 +50,7 @@ kinek mennyit fizet a kiegyenlítéshez.
 - `apps/web` — Vue 3 frontend. Production módban egy saját, kicsi Fastify
   szerver (`server.js`) szolgálja ki a Vite build kimenetét (`dist/`) és
   proxyzza a `/api`-t a backendre — nincs nginx. Elébe reverse proxy (pl.
-  Caddy) állítható a `compose.yaml` `web` service labeljeivel, ami a
+  Caddy) állítható a `compose.yml` `web` service labeljeivel, ami a
   TLS-t és a domain-routingot adja.
 - `packages/shared` — közös Zod sémák, pénz- és elszámolási logika (a
   frontend és a backend is ugyanazokat a sémákat importálja)
@@ -77,12 +77,12 @@ docker compose up --build
 
 Az app a `http://localhost:8090` címen érhető el (a `web` service saját
 Fastify szervere 8080-as portját publikálja host 8090-re — állítsd át a
-`compose.yaml` `web.ports` bejegyzését, ha más portot szeretnél).
+`compose.yml` `web.ports` bejegyzését, ha más portot szeretnél).
 
 ## Fejlesztői mód (hot reload)
 
 ```sh
-docker compose -f compose.yaml -f compose.dev.yaml up --build
+docker compose -f compose.yml -f compose.dev.yml up --build
 ```
 
 Ez bind mountokkal indítja a szolgáltatásokat: a backend `node --watch`-csal,

@@ -1,13 +1,17 @@
+name: filler
+
 services:
   mongo:
-    image: mongo:7
+    container_name: filler-mongo
+    image: mongo:7.0.39
     restart: unless-stopped
     # Ideiglenes: a host disk (/mnt/WDred) jelenleg majdnem 0 byte szabad
     # hellyel fut, ami a diagnosztikai adatgyűjtő (FTDC) írási hibáján
     # keresztül crash-loopba vitte a mongod-ot. Ez a --setParameter csak
     # kikapcsolja az FTDC-t (nem érint semmilyen tárolt adatot) — vedd ki,
     # ha felszabadult a hely.
-    command: ['mongod', '--setParameter', 'diagnosticDataCollectionEnabled=false']
+    # --auth: az app a MONGO_URL-ben lévő felhasználóval csatlakozik (.env)
+    command: ['mongod', '--auth', '--setParameter', 'diagnosticDataCollectionEnabled=false']
     volumes:
       - ./mongo-data:/data/db
     healthcheck:
@@ -17,13 +21,15 @@ services:
       retries: 5
       start_period: 10s
     ports:
-      - '${MONGO_HOST_PORT:-9879}:27017'
+      # Csak a hostról érhető el (pl. SSH tunnellel), a LAN-ról nem
+      - '127.0.0.1:${MONGO_HOST_PORT:-9879}:27017'
     networks:
       - internal
   backup:
+    container_name: filler-backup
     # Ugyanaz az image, mint a mongo — a mongodump, tar és gzip már benne van,
     # így nincs se build lépés, se újabb letöltés. Az ütemezést a script végzi.
-    image: mongo:7
+    image: mongo:7.0.39
     restart: unless-stopped
     depends_on:
       mongo:
@@ -54,6 +60,7 @@ services:
     networks:
       - internal
   api:
+    container_name: filler-api
     build:
       context: .
       dockerfile: apps/api/Dockerfile
@@ -81,6 +88,7 @@ services:
     networks:
       - internal
   web:
+    container_name: filler-web
     build:
       context: .
       dockerfile: apps/web/Dockerfile
@@ -92,7 +100,8 @@ services:
       PORT: ${WEB_PORT:-8080}
       API_URL: http://api:${API_PORT:-3000}
     ports:
-      - '${WEB_HOST_PORT:-8090}:${WEB_PORT:-8080}'
+      # Kívülről a Caddyn keresztül (filler.p1ckle.xyz), ez csak helyi eléréshez kell
+      - '127.0.0.1:${WEB_HOST_PORT:-8090}:${WEB_PORT:-8080}'
     healthcheck:
       test:
         [

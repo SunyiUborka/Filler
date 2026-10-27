@@ -5,7 +5,7 @@ import { EventEmitter } from 'node:events';
  * kiegyenlítés-mutációk publikálnak, a stream route feliratkozik.
  *
  * Szándékosan memóriában tartott, külső broker (Redis) nélkül — egyetlen `api`
- * konténer fut (lásd compose.yaml), így nincs mit szinkronizálni példányok
+ * konténer fut (lásd compose.yml), így nincs mit szinkronizálni példányok
  * között. Ha ez egyszer megváltozik, ennek a modulnak a belsejét kell
  * kicserélni; a két exportált függvény felületét nem.
  */

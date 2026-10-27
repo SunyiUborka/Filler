@@ -90,7 +90,7 @@ mkdir -p "$BACKUP_DIR"
 # Előző futásból ottfelejtett félkész archívumok.
 rm -f "$BACKUP_DIR"/.kassza-*.tar.gz.part
 
-log "indul — cél: $BACKUP_DIR, forrás: $MONGO_URL"
+log "indul — cél: $BACKUP_DIR, forrás: $(printf %s "$MONGO_URL" | sed 's#//[^@]*@#//***@#')"
 log "megőrzés: ${KEEP_HOURLY_HOURS} órán át óránként, ${KEEP_DAILY_DAYS} napon át naponta"
 
 while true; do

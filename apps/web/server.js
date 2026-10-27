@@ -6,7 +6,7 @@ import path from 'node:path';
 /**
  * Produkciós frontend szerver: kiszolgálja a buildelt Vue SPA-t (dist/), és
  * a /api útvonalat a backendre proxyzza. Nincs nginx — egy Caddy reverse
- * proxy áll elébe (lásd compose.yaml web service labeljei), ami TLS-t és a
+ * proxy áll elébe (lásd compose.yml web service labeljei), ami TLS-t és a
  * domain-routingot adja.
  */
 const PORT = Number(process.env.PORT) || 8080;

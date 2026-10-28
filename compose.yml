@@ -3,7 +3,7 @@ name: filler
 services:
   mongo:
     container_name: filler-mongo
-    image: mongo:7.0.39
+    image: mongo:7.0.45
     restart: unless-stopped
     # Ideiglenes: a host disk (/mnt/WDred) jelenleg majdnem 0 byte szabad
     # hellyel fut, ami a diagnosztikai adatgyűjtő (FTDC) írási hibáján
@@ -29,7 +29,7 @@ services:
     container_name: filler-backup
     # Ugyanaz az image, mint a mongo — a mongodump, tar és gzip már benne van,
     # így nincs se build lépés, se újabb letöltés. Az ütemezést a script végzi.
-    image: mongo:7.0.39
+    image: mongo:7.0.45
     restart: unless-stopped
     depends_on:
       mongo:
@@ -115,7 +115,7 @@ services:
       retries: 5
       start_period: 5s
     labels:
-      caddy: ${CADDY_HOST:-bill.p1ckle.xyz}
+      caddy: ${CADDY_HOST:?Állítsd be a CADDY_HOST-ot a .env-ben}
       caddy.reverse_proxy: '{{upstreams ${WEB_PORT:-8080}}}'
     networks:
       - caddy
